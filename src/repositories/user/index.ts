@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { addresses, users } from "@/db/schema";
 import { User } from "@/domain/user/user-entity";
 import { CreateUserInput, UpdateUserInput } from "@/domain/user/user-schema";
-import { eq, like } from "drizzle-orm";
+import { eq, ilike, or } from "drizzle-orm";
 
 export async function createUserRepository(data: CreateUserInput) {
   const [createdUser] = await db
@@ -32,7 +32,12 @@ export async function getAllUsersRepository(
 ): Promise<{ users: User[]; total: number }> {
   const offset = (page - 1) * limit;
 
-  const whereClause = search ? like(users.firstname, `%${search}%`) : undefined;
+  const whereClause = search
+    ? or(
+        ilike(users.firstname, `%${search}%`),
+        ilike(users.lastname, `%${search}%`)
+      )
+    : undefined;
 
   const totalResult = await db
     .select()

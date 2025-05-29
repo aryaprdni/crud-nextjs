@@ -8,15 +8,15 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = Number(params.id);
+  const { id } = await params;
+  const numericId = Number(id);
 
-  if (isNaN(id)) {
+  if (isNaN(numericId)) {
     return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
   }
-
-  const user = await getUserByIdUseCase(id);
+  const user = await getUserByIdUseCase(numericId);
 
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -27,10 +27,11 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = Number(params.id);
+    const { id } = await params;
+    const userId = Number(id);
     if (isNaN(userId)) {
       return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
     }
@@ -57,15 +58,16 @@ export async function PUT(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = Number(params.id);
+  const { id } = await params;
+  const userId = Number(id);
 
-  if (isNaN(id)) {
+  if (isNaN(userId)) {
     return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
   }
 
-  const deleted = await deleteUserByIdUseCase(id);
+  const deleted = await deleteUserByIdUseCase(userId);
 
   if (!deleted) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
