@@ -41,19 +41,17 @@ export default function UsersPage() {
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">User List</h1>
 
-      {/* Search input */}
       <input
         type="text"
         placeholder="Search by firstname..."
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
-          setPage(1); // reset page saat search berubah
+          setPage(1);
         }}
         className="border p-2 mb-4 w-full rounded"
       />
 
-      {/* User cards */}
       <div className="grid gap-4">
         {users.length === 0 && <p>No users found.</p>}
 
